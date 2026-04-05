@@ -1,5 +1,5 @@
 import { attachmentPropList } from "@assets/Attachments.asset";
-import { Utils } from "@shared/Utils.module";
+import { Utils } from "@shared/utils.module";
 
 interface IAttachment {
     id: string | number;

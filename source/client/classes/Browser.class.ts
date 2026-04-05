@@ -1,4 +1,4 @@
-import { Utils } from "@shared/Utils.module";
+import { Utils } from "../../shared/utils.module";
 import { CEFPages } from "@assets/CEFPages.asset";
 
 const disabledControls = [

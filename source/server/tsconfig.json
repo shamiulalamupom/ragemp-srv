@@ -34,6 +34,9 @@
             "@prototype/*": [
                 "./prototype/*"
             ],
+            "@shared": [
+                "../shared/index.ts"
+            ],
             "@shared/*": [
                 "../shared/*"
             ]
@@ -48,6 +51,6 @@
     ],
     "exclude": [
         "node_modules",
-        "../../../node_modules"
+        "../../node_modules"
     ]
 }

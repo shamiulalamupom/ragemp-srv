@@ -1,4 +1,4 @@
-import { Utils } from "@shared/Utils.module";
+import { Utils } from "@shared/utils.module";
 import { Client } from "@classes/Client.class";
 import { InteractablePed } from "@classes/InteractablePed.class";
 import { Inventory } from "@classes/Inventory.class";

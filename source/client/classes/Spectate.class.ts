@@ -1,4 +1,4 @@
-import { Utils } from "@shared/Utils.module";
+import { Utils } from "@shared/utils.module";
 
 class Spectator {
     is_spectating = false;

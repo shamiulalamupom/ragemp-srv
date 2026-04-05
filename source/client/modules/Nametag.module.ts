@@ -1,5 +1,5 @@
 import { Client } from "@classes/Client.class";
-import { Utils } from "@shared/Utils.module";
+import { Utils } from "@shared/utils.module";
 
 let maxDistance = 15;
 

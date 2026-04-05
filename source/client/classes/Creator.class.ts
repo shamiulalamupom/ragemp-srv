@@ -1,6 +1,6 @@
 import { femaleHairOverlays, genderPreset, maleHairOverlays } from "@assets/Creator.assets";
 import { Client } from "./Client.class";
-import { Utils } from "@shared/Utils.module";
+import { Utils } from "@shared/utils.module";
 import { Camera } from "./Camera.class";
 import { RageShared } from "@shared";
 

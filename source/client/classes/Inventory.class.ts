@@ -1,4 +1,4 @@
-import { Utils } from "@shared/Utils.module";
+import { Utils } from "@shared/utils.module";
 import { Browser } from "./Browser.class";
 import { ChatAPI } from "./Chat.class";
 

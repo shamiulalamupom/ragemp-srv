@@ -1,7 +1,7 @@
 import * as maleClothes from "@shared/json/maleTorso.json";
 import * as femaleClothes from "@shared/json/femaleTorso.json";
 import { PlayerHud } from "./Hud.class";
-import { Utils } from "@shared/Utils.module";
+import { Utils } from "@shared/utils.module";
 type IClothesData = Record<number, Record<number, { BestTorsoDrawable: number; BestTorsoTexture: number }>>;
 
 const torsoDataMale: IClothesData = maleClothes;
