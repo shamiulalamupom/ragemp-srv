@@ -53,3 +53,11 @@ mp.events.add("client::effects:startScreenEffect", (effectName, duration = 3000,
 mp.events.add("client::effects:stopScreenEffect", (effectName) => {
     mp.game.graphics.stopScreenEffect(effectName);
 });
+
+mp.events.add("client::screen:fade", (fadeOut: boolean, duration: number = 1000) => {
+    fadeOut ? mp.game.cam.doScreenFadeOut(duration) : mp.game.cam.doScreenFadeIn(duration);
+});
+
+mp.events.add("client::player:freeze", (toggle: boolean) => {
+    mp.players.local.freezePosition(toggle);
+});

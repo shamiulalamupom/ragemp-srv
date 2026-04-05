@@ -1,0 +1,15 @@
+FROM debian:bookworm-slim
+
+# Install procps (for vmstat) and other dependencies
+RUN apt-get update && apt-get install -y \
+    procps \
+    libstdc++6 \
+    libssl3 \
+    libatomic1 \
+    ca-certificates \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /server
+
+ENTRYPOINT ["sh", "-c", "chmod +x ./ragemp-server && ./ragemp-server"]

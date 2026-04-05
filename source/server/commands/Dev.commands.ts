@@ -3,6 +3,7 @@ import { inventorydataPresset } from "@modules/inventory/Assets.module";
 import { RageShared } from "@shared/index";
 import { NativeMenu } from "@classes/NativeMenu.class";
 import { House } from "@classes/House.class";
+import { CharacterEntity } from "@entities/Character.entity";
 
 RAGERP.commands.add({
     name: "gotopos",
@@ -46,8 +47,7 @@ RAGERP.commands.add({
     name: "clearinventory",
     adminlevel: RageShared.Enums.ADMIN_LEVELS.LEVEL_SIX,
     run: (player: PlayerMp, fulltext: string, targetid: string) => {
-
-        if (!targetid.length) return RAGERP.chat.sendSyntaxError(player, "/clearinventory [playerid]")
+        if (!targetid.length) return RAGERP.chat.sendSyntaxError(player, "/clearinventory [playerid]");
 
         let target = mp.players.at(parseInt(targetid));
         if (!target || !mp.players.exists(target) || !target.character || !target.character.inventory) return;
@@ -60,20 +60,6 @@ RAGERP.commands.add({
         target.character.inventory.reloadClothes(target);
     }
 });
-
-// RAGERP.commands.add({
-//     name: "giveweapon",
-//     adminlevel: RageShared.Enums.ADMIN_LEVELS.LEVEL_SIX,
-//     run: (player: PlayerMp, fulltext, weapon: RageShared.Inventory.Enums.ITEM_TYPES) => {
-//         if (!player.character || !player.character.inventory) return;
-//         const itemData = player.character.inventory.addItem(weapon);
-//         if (!itemData || itemData.typeCategory !== RageShared.Inventory.Enums.ITEM_TYPE_CATEGORY.TYPE_WEAPON) return;
-//         player.showNotify(
-//             itemData ? RageShared.Enums.NotifyType.TYPE_SUCCESS : RageShared.Enums.NotifyType.TYPE_ERROR,
-//             itemData ? `You received a ${itemData.name}` : `An error occurred giving u the item.`
-//         );
-//     }
-// });
 
 RAGERP.commands.add({
     name: "setpage",
@@ -96,7 +82,7 @@ RAGERP.commands.add({
     adminlevel: RageShared.Enums.ADMIN_LEVELS.LEVEL_SIX,
     run: (player: PlayerMp) => {
         //@ts-ignore
-        player.call("testcambro")
+        player.call("testcambro");
     }
 });
 
@@ -159,5 +145,101 @@ RAGERP.commands.add({
     name: "testattach",
     run: (player: PlayerMp, fullText: string, item: string, isAttach: string) => {
         player.attachObject(item, parseInt(isAttach) !== 0);
+    }
+});
+
+RAGERP.commands.add({
+    name: "setpopulation",
+    description: "Set ambient population density (0.0 - 1.0)",
+    adminlevel: 0,
+    run: (player: PlayerMp, fulltext: string, density: string) => {
+        const value = parseFloat(density);
+        if (isNaN(value)) return player.outputChatBox("Usage: /setpopulation [0.0 - 1.0]");
+        
+        mp.players.call("client::population:setDensity", [value]);
+        player.outputChatBox(`Ambient population density set to ${value} for all players.`);
+    }
+});
+
+RAGERP.commands.add({
+    name: "beadmin",
+    description: "Sets your admin level to 6 (Dev only)",
+    adminlevel: 0,
+    run: async (player: PlayerMp) => {
+        if (!player.character) return player.outputChatBox("You must be logged in to a character.");
+        player.character.adminlevel = 6;
+        player.setVariable("adminLevel", 6);
+        //@ts-ignore
+        await RAGERP.database.getRepository(CharacterEntity).update(player.character.id, { adminlevel: 6 });
+        player.outputChatBox("!{green}You are now a Level 6 Admin!");
+        RAGERP.commands.reloadCommands(player);
+    }
+});
+RAGERP.commands.add({
+    name: "villas",
+    adminlevel: RageShared.Enums.ADMIN_LEVELS.LEVEL_SIX,
+    run: (player: PlayerMp) => {
+        player.outputChatBox("--- Iconic Villas ---");
+        player.outputChatBox("/villa franklin - Franklin's Mansion");
+        player.outputChatBox("/villa michael - Michael's House");
+        player.outputChatBox("/villa trevor - Trevor's Trailer");
+        player.outputChatBox("/villa eclipse - Eclipse Towers Penthouse");
+        player.outputChatBox("/villa stilt - Vinewood Stilt House");
+        player.outputChatBox("/villa casino - Diamond Casino Penthouse");
+        player.outputChatBox("/villa yacht - Luxury Yacht");
+    }
+});
+
+RAGERP.commands.add({
+    name: "villa",
+    adminlevel: RageShared.Enums.ADMIN_LEVELS.LEVEL_SIX,
+    run: (player: PlayerMp, fulltext: string, type: string) => {
+        if (!type) return player.outputChatBox("Usage: /villa [name]");
+
+        switch (type.toLowerCase()) {
+            case "franklin":
+                player.position = new mp.Vector3(7.61, 538.21, 176.02);
+                break;
+            case "michael":
+                player.position = new mp.Vector3(-802.31, 175.04, 72.84);
+                break;
+            case "trevor":
+                player.position = new mp.Vector3(1974.16, 3819.04, 33.42);
+                break;
+            case "eclipse":
+                player.position = new mp.Vector3(-285.50, -720.0, 121.0); // Eclipse Towers
+                player.call("client::player:freeze", [true]);
+                setTimeout(() => player.call("client::player:freeze", [false]), 3000);
+                break;
+            case "stilt":
+                player.position = new mp.Vector3(-169.0, 486.0, 137.0); // Vinewood Hills
+                player.call("client::player:freeze", [true]);
+                setTimeout(() => player.call("client::player:freeze", [false]), 3000);
+                break;
+            case "yacht":
+                player.position = new mp.Vector3(-2022.0, -1038.0, 6.0); // The Yacht
+                break;
+            case "casino":
+                player.position = new mp.Vector3(976.6, 70.3, 115.2);
+                player.call("client::player:freeze", [true]);
+                setTimeout(() => player.call("client::player:freeze", [false]), 5000); // 5 seconds for safety!
+                break;
+            default:
+                player.outputChatBox("Unknown location. Use /villas to see the list.");
+        }
+    }
+});
+
+RAGERP.commands.add({
+    name: "freeze",
+    adminlevel: RageShared.Enums.ADMIN_LEVELS.LEVEL_ONE,
+    run: (player: PlayerMp, fulltext: string, target: string, toggle: string) => {
+        if (!target) return player.outputChatBox("Usage: /freeze [target] [1/0]");
+        const targetPlayer = mp.players.at(parseInt(target));
+        if (!targetPlayer) return;
+
+        const isFrozen = toggle === "1";
+        targetPlayer.call("client::player:freeze", [isFrozen]);
+        player.outputChatBox(`${targetPlayer.name} is now ${isFrozen ? "frozen" : "unfrozen"}.`);
     }
 });

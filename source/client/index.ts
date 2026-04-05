@@ -22,6 +22,8 @@ import "@modules/Keybinding.module";
 import "@modules/Noclip.module";
 import "@modules/Nametag.module";
 import "@modules/IdleCamera.module";
+import "@modules/Interiors.module";
+import "@modules/Population.module";
 //-----------------------------------------//
 import "@prototype/Player.prototype";
 //-----------------------------------------//

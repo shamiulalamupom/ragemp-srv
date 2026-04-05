@@ -1,0 +1,38 @@
+services:
+  db:
+    image: postgres:15
+    container_name: ragemp_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_DB: ragemp
+    ports:
+      - "5432:5432"
+    volumes:
+      - ragemp_db_data:/var/lib/postgresql/data
+
+  server:
+    build:
+      context: .
+      dockerfile: Dockerfile.server
+    container_name: ragemp_server
+    depends_on:
+      - db
+    ports:
+      - "22005:22005/udp"
+      - "22006:22006/tcp"
+    env_file:
+      - .env
+    environment:
+      - DB_HOST=db
+    volumes:
+      - ./ragemp-server:/server/ragemp-server
+      - ./conf.json:/server/conf.json
+      - ./packages:/server/packages
+      - ./client_packages:/server/client_packages
+      - ./bin:/server/bin
+      - ./node_modules:/server/node_modules
+
+volumes:
+  ragemp_db_data:

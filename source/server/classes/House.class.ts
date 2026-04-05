@@ -1,6 +1,7 @@
 import { RAGERP } from "@api";
 import { HouseEntity } from "@entities/House.entity";
 import { DynamicPoint } from "./Point.class";
+import { RageShared } from "@shared/index";
 
 export class House {
     static List = new Map<number, House>();
@@ -53,10 +54,22 @@ export class House {
         this.owner = owner;
         this.ownerName = ownerName;
         this.class = classType;
-        this.dimension = this.id + 1000;
+        this.dimension = 0; // All houses in dimension 0 as requested
         this.createEntities();
 
         House.List.set(id, this);
+    }
+
+    public updateExit(position: Vector3): void {
+        this.exitPosition = position;
+        this.destroyEntities();
+        this.createEntities();
+    }
+
+    public updateEnter(position: Vector3): void {
+        this.enterPosition = position;
+        this.destroyEntities();
+        this.createEntities();
     }
 
     // Getters and setters
@@ -82,7 +95,15 @@ export class House {
                 player.hideInteractionButton()
             },
             onKeyPress: (player: PlayerMp) => {
-                player.outputChatBox(`You pressed E at house ${this.id}`);
+                if (this.locked) return player.showNotify(RageShared.Enums.NotifyType.TYPE_ERROR, "This house is locked.");
+                
+                player.call("client::screen:fade", [true, 1000]);
+                setTimeout(() => {
+                    player.position = this.exitPosition;
+                    player.dimension = this.dimension;
+                    player.call("client::screen:fade", [false, 1000]);
+                    player.hideInteractionButton();
+                }, 1050);
             },
         });
 
@@ -101,11 +122,11 @@ export class House {
 
         this.entities.exitMarker = mp.markers.new(1, this.exitPosition, 1, {
             color: [255, 0, 0, 255],
-            visible: true,
+            visible: false, // Hidden by default until we are actually "inside"
             dimension: this.dimension,
         });
 
-        this.entities.exitLabel = mp.labels.new(`House ${this.id}`, this.exitPosition, {
+        this.entities.exitLabel = mp.labels.new(`Exit House ${this.id}`, this.exitPosition, {
             los: false,
             font: 4,
             drawDistance: 10,
@@ -113,10 +134,20 @@ export class House {
         });
 
         this.entities.exitPoint = new DynamicPoint(this.exitPosition, 2.0, this.dimension, {
-            enterHandler: (player: PlayerMp) => { },
-            exitHandler: (player: PlayerMp) => { },
+            enterHandler: (player: PlayerMp) => {
+                player.showInteractionButton("E", "Exit House", `Press E to leave house ${this.id}`);
+            },
+            exitHandler: (player: PlayerMp) => {
+                player.hideInteractionButton()
+            },
             onKeyPress: (player: PlayerMp) => {
-                player.outputChatBox(`You pressed E to exit house ${this.id}`);
+                player.call("client::screen:fade", [true, 1000]);
+                setTimeout(() => {
+                    player.position = this.enterPosition;
+                    player.dimension = 0;
+                    player.call("client::screen:fade", [false, 1000]);
+                    player.hideInteractionButton();
+                }, 1050);
             },
         });
     }

@@ -5,7 +5,6 @@ import { RageShared } from "@shared/index";
 import { adminTeleports } from "@assets/Admin.asset";
 import { NativeMenu } from "@classes/NativeMenu.class";
 
-
 RAGERP.commands.add({
     name: "goto",
     adminlevel: RageShared.Enums.ADMIN_LEVELS.LEVEL_ONE,
@@ -176,7 +175,6 @@ RAGERP.commands.add({
         targetPlayer.showNotify(RageShared.Enums.NotifyType.TYPE_INFO, `Administrator ${player.name} changed your dimension to ${parseDimension}`);
     }
 });
-
 
 RAGERP.commands.add({
     name: "makeadmin",
@@ -381,14 +379,13 @@ RAGERP.commands.add({
     adminlevel: RageShared.Enums.ADMIN_LEVELS.LEVEL_SIX,
     run: async (player: PlayerMp) => {
         const filteredItems = Object.values(inventoryAssets.items).filter(
-            item => item.typeCategory !== RageShared.Inventory.Enums.ITEM_TYPE_CATEGORY.TYPE_CLOTHING &&
-                item.typeCategory !== RageShared.Inventory.Enums.ITEM_TYPE_CATEGORY.TYPE_PROP
+            (item) => item.typeCategory !== RageShared.Inventory.Enums.ITEM_TYPE_CATEGORY.TYPE_CLOTHING && item.typeCategory !== RageShared.Inventory.Enums.ITEM_TYPE_CATEGORY.TYPE_PROP
         );
 
         const menuItems = filteredItems.map((item, index) => ({
             uid: index,
             type: RageShared.Enums.NATIVEMENU_TYPES.TYPE_DEFAULT,
-            name: item.name,
+            name: item.name
         }));
 
         player.nativemenu = new NativeMenu(player, 1, "Item Spawn", "Select an item to spawn", menuItems);
@@ -401,7 +398,7 @@ RAGERP.commands.add({
             }
 
             const selectedItemData = RAGERP.utils.parseObject(selectedData);
-            const selectedItem = filteredItems.find(item => item.name === selectedItemData.name);
+            const selectedItem = filteredItems.find((item) => item.name === selectedItemData.name);
 
             if (!selectedItem) {
                 player.nativemenu?.destroy(player);
@@ -411,10 +408,7 @@ RAGERP.commands.add({
             player.character?.inventory?.addItem(selectedItem.type);
             player.nativemenu?.destroy(player);
 
-            RAGERP.chat.sendAdminWarning(
-                RageShared.Enums.HEXCOLORS.LIGHTRED,
-                `${player.name} has spawned a ${selectedItemData.name}`
-            );
+            RAGERP.chat.sendAdminWarning(RageShared.Enums.HEXCOLORS.LIGHTRED, `${player.name} has spawned a ${selectedItemData.name}`);
         } catch (error) {
             console.error("Error handling menu selection:", error);
             player.nativemenu?.destroy(player);
